@@ -1,22 +1,17 @@
 # LIVI-embedded-tablet-install
-A script to set up an embedded LIVI x86_64 tablet from a clean Debian minimal install.
+The **LIVI Tablet Prep Script** automates the initial system configuration of a Dell Latitude 7400 2-in-1 running a minimal Debian Trixie installation, preparing it for use as a dedicated LIVI embedded CarPlay system. It verifies that the `carplay` user exists, installs the required system dependencies, and grants the user sudo privileges. It then modifies GRUB and kernel settings to reduce boot time, suppress unnecessary boot messages, and provide a cleaner, quieter startup experience. The script also removes default login messages and creates a background power-monitoring service that continuously checks the tablet's AC adapter status and automatically shuts down the system when external power is disconnected (with a one-minute startup grace period). Finally, it configures the power monitor to launch automatically at boot and provides instructions for configuring Wi-Fi through NetworkManager. This script is intended to be run as root after a base Debian installation and before running the official LIVI headless installation script as the `carplay` user.
 
-# Note
-This was tested on a Dell Latitude 7200 2in1 tablet.  Audio is not configured as I use the "Disable Audio" option in LIVI settings.  I instead use the car bluetooth for audio as the mic in my tablet is unusable in a car.  This also allows me to use steering wheel controls for changing tracks.
-
-# System Prep
-Install debian using the netinstall image.  I used "debian-13.3.0-amd64-netinst.iso"  During setup, connect to your wifi so it saves the wifi config to the installed system.  This will be the only way to connect to the system via SSH once complete.  No local config will be possible after running the script, as you will be locked into LIVI.  
+# Before running the script
+Install debian using the netinstall image.  I used "debian-13.3.0-amd64-netinst.iso"  
 DESELECT "Debian dekstop environment" and "GNOME".  
 SELECT "SSH Server" and "Standard System Utilities" only.  
 
-# Installation
-Run this script logged in as root, when complete reboot.  
+# After running the script
+`curl -fL -o install.sh https://raw.githubusercontent.com/f-io/LIVI/main/scripts/install/install.sh`
 
-# After install
-It should boot straight to LIVI showing none of the usual linux boot process, and require NO login.  Don't install this on anything but a dedicated tablet for LIVI, as it will make the computer/tablet useless for anything else.
+`chmod +x install.sh`
 
-# Auto-Poweroff
-The script will set up cron to run a script in the backgrount monitoring if the power adapter is plugged into your tablet.  Any time within the first 5 minutes of uptime, if it detects no charger, it will disable the auto power off script until next reboot.  After 5 minutes, if it gets unplugged (or car was turned off cutting power to the charger), the system will automatically shut down.  This is great if your car only provides power to the carger while its runung, as it will turn off with the car.
+`./install.sh --headless`
 
 # Auto-Poweron (system dependent)
 In the Dell BIOS, you can configure the tablet to power on upon being plugged into a charger (or car turns on and provides power to the charger).  Not sure if other brands have the same feature.  This makes my tablet turn on and launch LIVI upon starting the car, as my car only provides electricity to the charger while it's running.
